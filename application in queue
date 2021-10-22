@@ -1,0 +1,168 @@
+#include <stdio.h>
+typedef struct node
+{
+    int info;
+    struct node *next;
+} nt;
+nt *push(nt *r, int n)
+{
+    nt *p = NULL;
+    p = (nt *)malloc(sizeof(nt));
+    p->info = n;
+    if (r == NULL)
+        r = p;
+    else
+    {
+        r->next = p;
+        r = p;
+    }
+    p->next = NULL;
+    return r;
+}
+void search(nt *l, int n)
+{
+    int flag = 0;
+    while (l != NULL)
+    {
+        if (l->info == n)
+        {
+            flag = 1;
+            break;
+        }
+        l = l->next;
+    }
+    if (flag == 1)
+        printf("\nfound\n");
+    else
+        printf("\nnot found\n");
+}
+void count(nt *l)
+{
+    int c = 0, ec = 0, oc = 0;
+    while (l != NULL)
+    {
+        if ((l->info) % 2 == 0)
+            ec++;
+        else
+            oc++;
+        c++;
+        l = l->next;
+    }
+    printf("\nTotal node:%d", c);
+    printf("\nEven node:%d", ec);
+    printf("\nOdd node:%d", oc);
+}
+nt *insertatch(nt *l)
+{
+    int ch, c = 0;
+    printf("\nEnter the info u need to add node before or after it\n");
+    scanf("%d", &ch);
+    nt *t = l;
+    nt *t1 = l;
+    while (t != NULL)
+    {
+        if (ch == t->info)
+        {
+            c = 1;
+            break;
+        }
+        t = t->next;
+    }
+    if (c == 1)
+    {
+        int n1, n;
+        printf("\nEnter the info of the node\n");
+        nt *p = NULL;
+        p = (nt *)malloc(sizeof(nt));
+        scanf("%d", &n1);
+        p->info = n1;
+        printf("\nEnter 1 for add node before it and 0 for after it\n");
+        scanf("%d", &n);
+        if (n == 1)
+        {
+            if (l != t)
+            {
+                while (t1->next != t)
+
+                {
+                    t1 = t1->next;
+                }
+                p->next = t;
+                t1->next = p;
+            }
+            else
+            {
+                p->next = t;
+                l = p;
+            }
+        }
+        else
+        {
+            if (t->next != NULL)
+            {
+                p->next = t->next;
+                t->next = p;
+            }
+            else
+            {
+                t->next = p;
+                p->next = NULL;
+            }
+        }
+    }
+    else
+        printf("no info found\n");
+    return l;
+}
+void disp(nt *l)
+{
+
+    while (l != NULL)
+    {
+        printf("%d ", l->info);
+        l = l->next;
+    }
+}
+int main()
+{
+    nt *l = NULL, *r = NULL, *l2 = NULL;
+    int n;
+    do
+    {
+        printf("\nEnter your choice\n1.Insert\n2.Search\n3.count node\n4.Insert node at choice\n5.display\n");
+        scanf("%d", &n);
+        switch (n)
+        {
+        case 1:
+            printf("Enter the element\n");
+            int k;
+            scanf("%d", &k);
+            r = push(r, k);
+            if (r != NULL && l == NULL)
+                l = r;
+            break;
+        case 2:
+            printf("Enter the element to be search\n");
+            int m;
+            scanf("%d", &m);
+            search(l, m);
+            break;
+        case 3:
+            count(l);
+            break;
+        case 4:
+            l = insertatch(l);
+            l2 = l;
+            while (l2 != NULL)
+            {
+                l2 = l2->next;
+            }
+            r = l2;
+            break;
+        case 5:
+            disp(l);
+            break;
+        }
+    } while (n <= 5);
+    return 0;
+}
