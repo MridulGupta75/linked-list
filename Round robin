@@ -1,0 +1,145 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct nodetype
+{
+    char process[10];
+    int info;
+    struct nodetype *next;
+} nt;
+void insert(nt **l, nt **r, int i)
+{
+    int pt;
+    nt *p = NULL;
+    p = (nt *)malloc(sizeof(nt));
+    if (p == NULL)
+        printf("\nMemory Error");
+    else
+    {
+        printf("\nEnter the process time\n");
+        scanf("%d", &pt);
+        p->info = pt;
+        if (i < 10)
+        {
+            p->process[0] = 'P';
+            p->process[1] = i + '0';
+            p->process[2] = '\0';
+        }
+        else if (i >= 10 && i <= 99)
+        {
+            p->process[0] = 'P';
+            p->process[2] = i % 10 + '0';
+            p->process[1] = i / 10 + '0';
+            p->process[3] = '\0';
+        }
+        // printf("%s",p->process);
+        if (*l == NULL && *r == NULL)
+        {
+            *r = *l = p;
+            p->next = *l;
+        }
+        else
+        {
+            (*r)->next = p;
+            p->next = *l;
+            *r = p;
+        }
+    }
+}
+void del(nt **l, nt **r, nt **k, int *tym_d)
+{
+    nt *m = *l;
+    if (*k == *l && *k != *r)
+    {
+        *l = (*l)->next;
+        (*r)->next = *l;
+    }
+    else if (*k == *l && *k == *r)
+    {
+        *l = *r = NULL;
+    }
+    else
+    {
+        while (m->next != *k)
+        {
+            m = m->next;
+        }
+        if (*k != *r)
+            m->next = (*k)->next;
+        else
+        {
+            m->next = *l;
+            *r = m;
+        }
+    }
+    printf("\nprocess completed for:%s \nAt time:%d", (*k)->process, *tym_d);
+    *tym_d = *tym_d + 10;
+    free(*k);
+}
+int main()
+{
+    nt *l = NULL, *r = NULL;
+    int n;
+    int ct = 10;
+    int tym_d = 10;
+    printf("\nEnter the number of processes\n");
+    scanf("%d", &n);
+    if (n < 1)
+        printf("error");
+    else
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            insert(&l, &r, i);
+        }
+        printf("\nThe queue\n");
+        nt *t = l;
+        do
+        {
+            printf("%d ", t->info);
+            t = t->next;
+        } while (t != r);
+        printf("%d ", t->info);
+        while (l != NULL && r != NULL)
+        {
+            nt *k = l;
+            while (k != r)
+            {
+                if (k->info <= ct)
+                {
+                    del(&l, &r, &k, &tym_d);
+                }
+                else
+                {
+                    k->info = (k->info) - ct;
+                    tym_d = tym_d + 10;
+                }
+                k = k->next;
+            }
+            if (k->info <= ct)
+            {
+                del(&l, &r, &k, &tym_d);
+            }
+            else
+            {
+                k->info = (k->info) - ct;
+                tym_d = tym_d + 10;
+            }
+
+            nt *t1 = l;
+            printf("\n");
+            if (l == NULL)
+                printf("process cmplt\n");
+            else
+            {
+                while (t1 != r)
+                {
+                    printf("%d ", t1->info);
+                    t1 = t1->next;
+                }
+                printf("%d ", t1->info);
+            }
+        }
+    }
+
+    return 0;
+}
